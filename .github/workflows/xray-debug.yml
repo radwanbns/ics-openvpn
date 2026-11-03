@@ -30,7 +30,12 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleUiOvpn2Debug --no-daemon
+          ./gradlew assembleUiOvpn2Debug --no-daemon --stacktrace 2>&1 | tee build.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Show root cause
+        if: failure()
+        run: grep -n "Caused by" build.log | head -30 || true
 
       - uses: actions/upload-artifact@v4
         with:
