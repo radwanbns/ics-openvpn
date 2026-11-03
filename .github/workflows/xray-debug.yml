@@ -29,9 +29,14 @@ jobs:
 
       - name: Use a separate package name (installs next to OpenVPN for Android)
         run: |
-          sed -i -E 's/(applicationId[[:space:]]*=[[:space:]]*)"de\.blinkt\.openvpn"/\1"com.xrayovpn.app"/' main/build.gradle.kts
-          grep -n "applicationId" main/build.gradle.kts
-          grep -q 'applicationId.*com.xrayovpn.app' main/build.gradle.kts
+          F=main/build.gradle.kts
+          if grep -qE 'applicationId[[:space:]]*=' "$F"; then
+            sed -i -E 's/(applicationId[[:space:]]*=[[:space:]]*)"[^"]*"/\1"com.xrayovpn.app"/' "$F"
+          else
+            sed -i '0,/defaultConfig[[:space:]]*{/s//defaultConfig {\n        applicationId = "com.xrayovpn.app"/' "$F"
+          fi
+          grep -n -B2 -A2 'applicationId' "$F"
+          grep -qE 'applicationId[[:space:]]*=[[:space:]]*"com.xrayovpn.app"' "$F"
 
       - name: Build debug APK
         run: |
