@@ -21,6 +21,12 @@ jobs:
       - name: Install swig
         run: sudo apt-get update && sudo apt-get install -y swig
 
+      - name: Accept Android SDK licenses and install NDK
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "ndk;30.0.14904198"
+
       - name: Build debug APK
         run: |
           chmod +x gradlew
