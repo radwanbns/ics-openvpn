@@ -1,0 +1,33 @@
+name: Xray Debug APK
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install swig
+        run: sudo apt-get update && sudo apt-get install -y swig
+
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleUiOvpn2Debug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: XrayOvpn-debug-apk
+          path: main/build/outputs/apk/**/*.apk
+          if-no-files-found: error
