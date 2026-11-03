@@ -27,6 +27,12 @@ jobs:
           yes | "$SDKM" --licenses > /dev/null || true
           "$SDKM" "ndk;30.0.14904198"
 
+      - name: Use a separate package name (installs next to OpenVPN for Android)
+        run: |
+          sed -i -E 's/(applicationId[[:space:]]*=[[:space:]]*)"de\.blinkt\.openvpn"/\1"com.xrayovpn.app"/' main/build.gradle.kts
+          grep -n "applicationId" main/build.gradle.kts
+          grep -q 'applicationId.*com.xrayovpn.app' main/build.gradle.kts
+
       - name: Build debug APK
         run: |
           chmod +x gradlew
