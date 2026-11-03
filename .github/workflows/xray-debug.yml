@@ -30,7 +30,7 @@ jobs:
       - name: Build debug APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleUiOvpn2Debug --no-daemon --stacktrace 2>&1 | tee build.log
+          ./gradlew assembleUiOvpn2Debug --no-daemon -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=1g" 2>&1 | tee build.log
           exit ${PIPESTATUS[0]}
 
       - name: Show root cause
